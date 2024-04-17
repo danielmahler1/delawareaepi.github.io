@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GoogleSheetsDbService } from 'ng-google-sheets-db';
 import { BrotherModalComponent } from '../../components/brother-modal/brother-modal.component';
 import { attributesMapping, Brother } from './brother.model';
+import {environment} from "src/environments/environment"
 
 @Component({
   selector: 'app-composite',
@@ -25,14 +26,14 @@ export class CompositeComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.googleSheetsDbService.get('1UgD_wIiqgUpVBbRVSBNOySmjb1TnAF3tY6Lf9aCAWb4', "All Active Brothers", attributesMapping).subscribe(data =>{
+        this.googleSheetsDbService.get(environment.rosterDriveID, "All Active Brothers", attributesMapping).subscribe(data =>{
             data.sort(this.compare)
 
             for(let brother of data){
                 if(!(<Brother>brother).image)
-                    (<Brother>brother).image = "https://drive.google.com/uc?export=view&id=1D-TTGqtB1zXYWxePaHU_mwdN5m29Puis";
+                    (<Brother>brother).image = "https://drive.google.com/thumbnail?id=1D-TTGqtB1zXYWxePaHU_mwdN5m29Puis";
                 else
-                    (<Brother>brother).image = "https://drive.google.com/uc?export=view&id=" + (<Brother>brother).image;
+                    (<Brother>brother).image = "https://drive.google.com/thumbnail?id=" + (<Brother>brother).image;
 
                 if((<Brother>brother).board)
                     this.brothers.unshift(brother);

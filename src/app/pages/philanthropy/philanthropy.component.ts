@@ -47,12 +47,11 @@ export class PhilanthropyComponent implements OnInit {
         this.udanceEventTag = "ud" + this.getYear();
         console.log(this.udanceEventTag);
 
-        //this check is to update the admin status whenever the user signs in or signs out
         this.authService.getCurrentAdminStatus().subscribe(data => {
             this.isAdmin = data;
         });
 
-        this.firebaseService.getDriveImages(environment.philanthropyDriveID).subscribe((data:any)=>{
+        this.firebaseService.getFolderContents(environment.philanthropyDriveID).subscribe((data:any)=>{
             data.files.forEach(element => {
                 if(element.mimeType != "application/vnd.google-apps.folder"){
                     this.hero.push(element.id);
@@ -79,17 +78,6 @@ export class PhilanthropyComponent implements OnInit {
             });
 
             this.loading = false;
-
-            //check user but has to be in this async because it doesn't work right away
-            //this check is for navigating back to this page while being signed in
-            if(this.authService.getUser()){
-                this.authService.getUserDbEntry().then(ss=>{ 
-                    if(ss.val() != null){
-                        this.isAdmin = ss.val().admin;
-                        console.log(this.isAdmin);
-                    }
-                });
-            }
         });
     }
 
@@ -169,7 +157,7 @@ export class PhilanthropyComponent implements OnInit {
 
     getYear(){
         let d = new Date();
-        return d.getMonth() <= 8 ? d.getFullYear() : d.getFullYear() + 1;
+        return d.getMonth() < 8 ? d.getFullYear() : d.getFullYear() + 1;
     }
     
 

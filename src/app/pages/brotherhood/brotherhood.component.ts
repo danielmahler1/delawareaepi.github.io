@@ -35,7 +35,7 @@ export class BrotherhoodComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.firebaseService.getDriveImages(environment.brotherhoodDriveID).subscribe((data: any) => {
+        this.firebaseService.getFolderContents(environment.brotherhoodDriveID).subscribe((data: any) => {
             data.files.forEach(element => {
                 this.files.push("https://drive.google.com/uc?export=view&id=" + element.id);
             });
@@ -54,24 +54,11 @@ export class BrotherhoodComponent implements OnInit {
                 this.events.push(data.events[id].event);
             });
         
-            //check user but has to be in this async because it doesn't work right away
-            //this check is for navigating back to this page while being signed in
-            if(this.authService.getUser()){
-                this.authService.getUserDbEntry().then(ss=>{ 
-                    //if the user does not exist, make a new user
-                    if(ss.val() != null){
-                        this.isAdmin = ss.val().admin;
-                        console.log(this.isAdmin);
-                    }
-                });
-            }
         });
 
-        //this check is to update the admin status whenever the user signs in or signs out
         this.authService.getCurrentAdminStatus().subscribe(data => {
             this.isAdmin = data;
         });
-
 
     }
 
